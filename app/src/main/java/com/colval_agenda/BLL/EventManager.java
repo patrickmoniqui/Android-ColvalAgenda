@@ -1,4 +1,4 @@
-package cegep.comcegepcalender.BLL;
+package com.colval_agenda.BLL;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -9,7 +9,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by 0756992 on 2017-04-24.

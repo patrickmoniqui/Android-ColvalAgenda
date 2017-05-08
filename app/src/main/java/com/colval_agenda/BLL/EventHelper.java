@@ -1,4 +1,4 @@
-package cegep.comcegepcalender.BLL;
+package com.colval_agenda.BLL;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
