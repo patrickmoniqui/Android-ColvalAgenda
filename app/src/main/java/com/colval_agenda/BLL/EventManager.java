@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by 0756992 on 2017-04-24.
@@ -83,7 +84,7 @@ public class EventManager {
                 event.setTitle(cursor.getString(cursor.getColumnIndex(EventHelper.EVENT_TITLE)));
                 event.setDescription(cursor.getString(cursor.getColumnIndex(EventHelper.EVENT_DESCRIPTION)));
                 event.setLocation(cursor.getString(cursor.getColumnIndex(EventHelper.EVENT_LOCATION)));
-                event.setColor(cursor.getInt(cursor.getColumnIndex(EventHelper.EVENT_COLOR)));
+                event.setEventColor(cursor.getInt(cursor.getColumnIndex(EventHelper.EVENT_COLOR)));
                 try {
                     event.setStartDate(dateFormat.parse(cursor.getString(cursor.getColumnIndex(EventHelper.EVENT_STARTDATE))));
                 } catch (ParseException e) {
@@ -114,7 +115,7 @@ public class EventManager {
             event.setTitle(cursor.getString(cursor.getColumnIndex(EventHelper.EVENT_TITLE)));
             event.setDescription(cursor.getString(cursor.getColumnIndex(EventHelper.EVENT_DESCRIPTION)));
             event.setLocation(cursor.getString(cursor.getColumnIndex(EventHelper.EVENT_LOCATION)));
-            event.setColor(cursor.getInt(cursor.getColumnIndex(EventHelper.EVENT_COLOR)));
+            event.setEventColor(cursor.getInt(cursor.getColumnIndex(EventHelper.EVENT_COLOR)));
             try {
                 event.setStartDate(dateFormat.parse(cursor.getString(cursor.getColumnIndex(EventHelper.EVENT_STARTDATE))));
             } catch (ParseException e) {
@@ -131,26 +132,15 @@ public class EventManager {
     }
 
     public int booleanToInt (boolean reminder){
-        int boolToInt = -1;
-        if (reminder == false){
-            boolToInt = 0;
-        } else if (reminder == true){
-            boolToInt = 1;
-        }
-        return boolToInt;
+        if(reminder) return 1;
+        else return 0;
     }
 
     public boolean intToBoolean (int reminder){
-        boolean intToBool = false;
         switch (reminder){
-            case 0:
-                intToBool = false;
-                break;
-            case 1:
-                intToBool = true;
-                break;
+            case 0: return false;
+            case 1: return true;
+            default: return false;
         }
-        return intToBool;
     }
-
 }

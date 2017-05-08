@@ -15,10 +15,10 @@ public class Event {
     private String Description;
     private String Location;
     private int EventColor;
-    private Date startTime;
-    private Date endTime;
+    private Date startDate;
+    private Date finishDate;
     private boolean AllDay;
-    private boolean notification;
+    private boolean reminder;
     private boolean editable;
 
     public BaseCalendarEvent ToBaseCalendarEvent()
@@ -29,10 +29,10 @@ public class Event {
         event.setLocation(Location);
         event.setDescription(Description);
         event.setColor(EventColor);
-        event.setStartTime(Utils.dateToCalendar(startTime));
-        event.setEndTime(Utils.dateToCalendar(endTime));
+        event.setStartTime(Utils.dateToCalendar(startDate));
+        event.setEndTime(Utils.dateToCalendar(finishDate));
         event.setAllDay(AllDay);
-        event.setNotification(notification);
+        event.setNotification(reminder);
 
         return event;
     }
@@ -77,20 +77,20 @@ public class Event {
         EventColor = eventColor;
     }
 
-    public Date getStartTime() {
-        return startTime;
+    public Date getStartDate() {
+        return startDate;
     }
 
-    public void setStartTime(Date startTime) {
-        this.startTime = startTime;
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
     }
 
-    public Date getEndTime() {
-        return endTime;
+    public Date getFinishDate() {
+        return finishDate;
     }
 
-    public void setEndTime(Date endTime) {
-        this.endTime = endTime;
+    public void setFinishDate(Date finishDate) {
+        this.finishDate = finishDate;
     }
 
     public boolean isAllDay() {
@@ -101,22 +101,19 @@ public class Event {
         AllDay = allDay;
     }
 
-
-    public void setNotification(boolean notification) {
-        this.notification = notification;
+    public boolean isReminder() {
+        return reminder;
     }
 
-    public boolean getNotification() {
-        return notification;
+    public void setReminder(boolean reminder) {
+        this.reminder = reminder;
     }
 
-    public boolean getEditable() {
+    public boolean isEditable() {
         return editable;
     }
 
     public void setEditable(boolean editable) {
         this.editable = editable;
     }
-
-
 }
