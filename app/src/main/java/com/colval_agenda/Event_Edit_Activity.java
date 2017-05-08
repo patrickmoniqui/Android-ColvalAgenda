@@ -2,6 +2,7 @@ package com.colval_agenda;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -29,6 +30,7 @@ public class Event_Edit_Activity extends AppCompatActivity {
     Button btnSave, btnClose, btnDelete;
     CheckBox ckRappeler;
     AgendaCalendarView mAgendaCalendarView;
+    int userId=-1;
     int eventId=-1;
     Event event;
     EventRepository repository;
@@ -41,6 +43,16 @@ public class Event_Edit_Activity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event__edit_);
+
+        //Authentification
+        if (!Utils.GlobalUserLogged(getBaseContext())) {
+            RedirectToLogin();
+        }
+        else
+        {
+            userId = Utils.GetGlobalUserId(getBaseContext());
+        }
+
         repository = EventRepository.getInstance(getBaseContext());
 
         btnSave = (Button)findViewById(R.id.Event_Edit_btnAdd);
@@ -70,10 +82,10 @@ public class Event_Edit_Activity extends AppCompatActivity {
 
             if(eventId > 0)
             {
-                event = repository.GetById(eventId);
+                event = repository.GetEventById(eventId);
 
                 // si l'évènement n'est pas modification
-                if(!event.getEditable())
+                if(!event.isEditable())
                 {
                     Toast.makeText(this, getResources().getText(R.string.errorCantEditEvent), Toast.LENGTH_SHORT).show();
                     finish();
@@ -99,7 +111,7 @@ public class Event_Edit_Activity extends AppCompatActivity {
     private void SetupInterfaceForEdit()
     {
         //initialise
-        Date date = event.getStartTime();
+        Date date = event.getStartDate();
         Calendar mcurrentDate=Calendar.getInstance();
         mcurrentDate.setTime(date);
         int mYear=mcurrentDate.get(Calendar.YEAR);
@@ -108,7 +120,7 @@ public class Event_Edit_Activity extends AppCompatActivity {
         int fhour = mcurrentDate.get(Calendar.HOUR_OF_DAY);
         int fminute = mcurrentDate.get(Calendar.MINUTE);
 
-        date = event.getEndTime();
+        date = event.getFinishDate();
         mcurrentDate=Calendar.getInstance();
         mcurrentDate.setTime(date);
         int thour = mcurrentDate.get(Calendar.HOUR_OF_DAY);
@@ -120,7 +132,7 @@ public class Event_Edit_Activity extends AppCompatActivity {
         txtStartDate.setText(Utils.padLeft(mDay, "0", 2) + "/" + Utils.padLeft(mMonth+1, "0", 2) + "/" + Utils.padLeft(mYear, "0", 2));
         txtStartTime.setText(Utils.padLeft(fhour, "0", 2) + ":" + Utils.padLeft(fminute, "0", 2));
         txtFinishTime.setText(Utils.padLeft(thour, "0", 2) + ":" + Utils.padLeft(tminute, "0", 2));
-        ckRappeler.setChecked(event.getNotification());
+        ckRappeler.setChecked(event.isReminder());
     }
 
     private void SetupEventHandlers()
@@ -191,9 +203,9 @@ public class Event_Edit_Activity extends AppCompatActivity {
             event.setLocation(location);
             event.setEventColor(ContextCompat.getColor(getApplicationContext(), R.color.dark_blue)); //DARK BLUE = CUSTOM EVENT ADDED BY USER
 
-            event.setStartTime(Utils.addTimeToDate(startDate, startTime));
-            event.setEndTime(Utils.addTimeToDate(startDate, finishTime));
-            event.setNotification(ckRappeler.isChecked());
+            event.setStartDate(Utils.addTimeToDate(startDate, startTime));
+            event.setFinishDate(Utils.addTimeToDate(startDate, finishTime));
+            event.setReminder(ckRappeler.isChecked());
 
             // if modification event
             if(eventId > 0)
@@ -263,5 +275,11 @@ public class Event_Edit_Activity extends AppCompatActivity {
             Toast.makeText(this, errMsg.substring(0, errMsg.length() - 1), Toast.LENGTH_SHORT).show();
             return false;
         }
+    }
+
+    public void RedirectToLogin()
+    {
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
     }
 }

@@ -20,6 +20,7 @@ public class Event {
     private boolean AllDay;
     private boolean reminder;
     private boolean editable;
+    private int userId;
 
     public BaseCalendarEvent ToBaseCalendarEvent()
     {
@@ -115,5 +116,13 @@ public class Event {
 
     public void setEditable(boolean editable) {
         this.editable = editable;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 }

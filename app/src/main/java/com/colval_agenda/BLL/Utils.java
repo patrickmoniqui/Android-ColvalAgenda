@@ -1,5 +1,12 @@
 package com.colval_agenda.BLL;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+
+import com.colval_agenda.LoginActivity;
+
 import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -10,6 +17,41 @@ import java.util.Date;
  */
 
 public class Utils {
+
+    public static void RegisterGlobalUser(Context ctx, int id, String password)
+    {
+        SharedPreferences settings = ctx.getApplicationContext().getSharedPreferences("Login", 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putInt("userId", id);
+        editor.putString("userPwd", password);
+        editor.apply();
+    }
+
+    public static void UnregisterGlobalUser(Context ctx)
+    {
+        SharedPreferences settings = ctx.getApplicationContext().getSharedPreferences("Login", 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.remove("userId");
+        editor.remove("userPwd");
+    }
+
+    public static boolean GlobalUserLogged(Context ctx)
+    {
+        SharedPreferences settings = ctx.getApplicationContext().getSharedPreferences("Login", 0);
+        int id = settings.getInt("userId", -1);
+        String pwd = settings.getString("userPwd", "");
+
+        if(id != -1 && !pwd.isEmpty()) return true;
+        else return false;
+    }
+
+    public static int GetGlobalUserId(Context ctx)
+    {
+        SharedPreferences settings = ctx.getApplicationContext().getSharedPreferences("Login", 0);
+        int id = settings.getInt("userId", -1);
+
+        return id;
+    }
 
     //Convert Date to Calendar
     public static Calendar dateToCalendar(Date date) {

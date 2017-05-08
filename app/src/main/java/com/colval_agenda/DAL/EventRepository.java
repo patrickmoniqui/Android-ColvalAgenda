@@ -21,7 +21,7 @@ public class EventRepository {
     private static EventRepository instance = null;
     private Context context;
     List<Event> eventList;
-    private static int mId = 0;
+    private static int mId = 1;
 
     protected EventRepository(Context ctx) {
         context = ctx;
@@ -34,16 +34,15 @@ public class EventRepository {
 
         Event event1 = new Event();
 
-        event1.setId(1);
         event1.setTitle("C++");
         event1.setDescription("A wonderful journey!");
         event1.setLocation("AM-18");
         event1.setEventColor(Color.DKGRAY);
-        event1.setEditable(false);
-        event1.setStartTime(Utils.calendarToDate(startTime1));
-        event1.setEndTime(Utils.calendarToDate(endTime1));
+        event1.setStartDate(Utils.calendarToDate(startTime1));
+        event1.setFinishDate(Utils.calendarToDate(endTime1));
         event1.setAllDay(false);
-        event1.setNotification(true);
+        event1.setReminder(true);
+        event1.setEditable(false);
 
         startTime1 = Calendar.getInstance();
         startTime1.add(Calendar.HOUR, 2);
@@ -52,16 +51,15 @@ public class EventRepository {
 
         Event event2 = new Event();
 
-        event2.setId(2);
-        event2.setTitle("C++");
+        event2.setTitle("Android");
         event2.setDescription("A wonderful journey!");
         event2.setLocation("AM-18");
         event2.setEventColor(Color.DKGRAY);
-        event2.setEditable(false);
-        event2.setStartTime(Utils.calendarToDate(startTime1));
-        event2.setEndTime(Utils.calendarToDate(endTime1));
+        event2.setStartDate(Utils.calendarToDate(startTime1));
+        event2.setFinishDate(Utils.calendarToDate(endTime1));
         event2.setAllDay(false);
-        event2.setNotification(false);
+        event2.setReminder(false);
+        event2.setEditable(false);
 
         startTime1 = Calendar.getInstance();
         startTime1.add(Calendar.DATE, 1);
@@ -71,16 +69,15 @@ public class EventRepository {
 
         Event event3 = new Event();
 
-        event3.setId(3);
         event3.setTitle("Réunion");
         event3.setDescription("Project android");
         event3.setLocation("AM-16");
         event3.setEventColor(ResourcesCompat.getColor(ctx.getResources(), R.color.dark_green, null));
-        event3.setStartTime(Utils.calendarToDate(startTime1));
-        event3.setEndTime(Utils.calendarToDate(endTime1));
+        event3.setStartDate(Utils.calendarToDate(startTime1));
+        event3.setFinishDate(Utils.calendarToDate(endTime1));
         event3.setEditable(true);
         event3.setAllDay(false);
-        event3.setNotification(true);
+        event3.setReminder(true);
 
         AddEvent(event1);
         AddEvent(event2);
@@ -93,7 +90,7 @@ public class EventRepository {
         return instance;
     }
 
-    public Event GetById(int id)
+    public Event GetEventById(int id)
     {
         for(Event event : eventList)
         {
@@ -105,7 +102,12 @@ public class EventRepository {
         return null;
     }
 
-    public List<Event> GetAll()
+    public List<Event> GetAllEventsByUserId(int id)
+    {
+        return eventList;
+    }
+
+    public List<Event> GetAll(int id)
     {
         return eventList;
     }
@@ -115,10 +117,10 @@ public class EventRepository {
         event.setId(mId++);
         eventList.add(event);
 
-        if(event.getNotification())
+        if(event.isReminder())
         {
             Notifications n = new Notifications(context);
-            n.createNotificationAtDate(event.getId(), event.getStartTime(), "Colval Agenda", "Votre événement " + event.getTitle() + " commence!");
+            n.createNotificationAtDate(event.getId(), event.getStartDate(), "Colval Agenda", "Votre événement " + event.getTitle() + " commence!");
         }
 
         return true;
@@ -151,15 +153,15 @@ public class EventRepository {
                 event.setTitle(newEvent.getTitle());
                 event.setDescription(newEvent.getDescription());
                 event.setLocation(newEvent.getLocation());
-                event.setStartTime(newEvent.getStartTime());
-                event.setEndTime(newEvent.getEndTime());
-                boolean notificationBefore = event.getNotification();
-                event.setNotification(newEvent.getNotification());
+                event.setStartDate(newEvent.getStartDate());
+                event.setFinishDate(newEvent.getFinishDate());
+                boolean notificationBefore = event.isReminder();
+                event.setReminder(newEvent.isReminder());
 
-                if(event.getNotification())
+                if(event.isReminder())
                 {
                     Notifications n = new Notifications(context);
-                    n.createNotificationAtDate(event.getId(), event.getStartTime(), "Colval Agenda", "Votre événement " + event.getTitle() + " commence!");
+                    n.createNotificationAtDate(event.getId(), event.getStartDate(), "Colval Agenda", "Votre événement " + event.getTitle() + " commence!");
                 }
                 else if(notificationBefore)
                 {

@@ -1,6 +1,7 @@
 package com.colval_agenda;
 
 import com.colval_agenda.BLL.Event;
+import com.colval_agenda.BLL.Utils;
 import com.colval_agenda.DAL.EventRepository;
 import com.github.tibolte.agendacalendarview.AgendaCalendarView;
 import com.github.tibolte.agendacalendarview.CalendarManager;
@@ -31,10 +32,22 @@ public class MainActivity extends AppCompatActivity implements CalendarPickerCon
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
     AgendaCalendarView mAgendaCalendarView;
     EventRepository eventRepository;
+    int numDA;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        if(Utils.GlobalUserLogged(getBaseContext()))
+        {
+            numDA = Utils.GetGlobalUserId(getBaseContext());
+        }
+        else
+        {
+            RedirectToLogin();
+        }
+
+
         mAgendaCalendarView = (AgendaCalendarView)findViewById(R.id.agenda_calendar_view);
         eventRepository = EventRepository.getInstance(getBaseContext());
 
@@ -51,10 +64,13 @@ public class MainActivity extends AppCompatActivity implements CalendarPickerCon
         maxDate.add(Calendar.YEAR, 1);
 
         List<CalendarEvent> eventList = new ArrayList<>();
-        for(Event event : eventRepository.GetAll())
+        List<Event> events = eventRepository.GetAllEventsByUserId(numDA);
+
+        for(Event event : events)
         {
             eventList.add(event.ToBaseCalendarEvent());
         }
+
 
         CalendarManager calendarManager = CalendarManager.getInstance(getApplicationContext());
         calendarManager.buildCal(minDate, maxDate, Locale.getDefault(), new DayItem(), new WeekItem());
@@ -120,4 +136,11 @@ public class MainActivity extends AppCompatActivity implements CalendarPickerCon
     protected void onRestart() {
         super.onRestart();
     }
+
+    public void RedirectToLogin()
+    {
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
+    }
 }
+
