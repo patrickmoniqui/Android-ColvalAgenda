@@ -1,20 +1,14 @@
 package com.colval_agenda;
 
 import android.app.AlarmManager;
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
-import android.widget.Toast;
 
-import com.colval_agenda.BLL.Utils;
-import com.github.tibolte.agendacalendarview.models.CalendarEvent;
 import com.github.tibolte.colvalcalendar.R;
 
 import java.util.Calendar;

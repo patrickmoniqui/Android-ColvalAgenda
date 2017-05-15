@@ -1,8 +1,11 @@
 package com.colval_agenda;
 
 import com.colval_agenda.BLL.Event;
-import com.colval_agenda.BLL.Utils;
+import com.colval_agenda.Utils.Preferences;
+import com.colval_agenda.Utils.Utils;
 import com.colval_agenda.DAL.EventRepository;
+import com.colval_agenda.DAL.HttpGetHandler;
+import com.colval_agenda.DAL.LoginManager;
 import com.github.tibolte.agendacalendarview.AgendaCalendarView;
 import com.github.tibolte.agendacalendarview.CalendarManager;
 import com.github.tibolte.agendacalendarview.CalendarPickerController;
@@ -15,6 +18,7 @@ import com.github.tibolte.agendacalendarview.models.WeekItem;
 import com.github.tibolte.colvalcalendar.R;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -32,11 +36,14 @@ public class MainActivity extends AppCompatActivity implements CalendarPickerCon
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
     AgendaCalendarView mAgendaCalendarView;
     EventRepository eventRepository;
+    List<Event> classes;
     int numDA;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        classes = new ArrayList<>();
 
         if(Utils.GlobalUserLogged(getBaseContext()))
         {
@@ -66,11 +73,18 @@ public class MainActivity extends AppCompatActivity implements CalendarPickerCon
         List<CalendarEvent> eventList = new ArrayList<>();
         List<Event> events = eventRepository.GetAllEventsByUserId(numDA);
 
+        new GetClassesAsyncTask().execute();
+
+        for (int i = 0; i < classes.size(); i++){
+            if (classes.get(i).getUserId() == numDA){
+                events.add(classes.get(i));
+            }
+        }
+
         for(Event event : events)
         {
             eventList.add(event.ToBaseCalendarEvent());
         }
-
 
         CalendarManager calendarManager = CalendarManager.getInstance(getApplicationContext());
         calendarManager.buildCal(minDate, maxDate, Locale.getDefault(), new DayItem(), new WeekItem());
@@ -141,6 +155,16 @@ public class MainActivity extends AppCompatActivity implements CalendarPickerCon
     {
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
+    }
+
+    class GetClassesAsyncTask extends AsyncTask <Void, Void, Void>{
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            HttpGetHandler httpGetHandler = new HttpGetHandler();
+            classes = httpGetHandler.callGetWebService(Preferences.URL_GET_CLASSES);
+            return null;
+        }
     }
 }
 

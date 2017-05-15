@@ -5,7 +5,7 @@ import android.graphics.Color;
 import android.support.v4.content.res.ResourcesCompat;
 
 import com.colval_agenda.BLL.Event;
-import com.colval_agenda.BLL.Utils;
+import com.colval_agenda.Utils.Utils;
 import com.colval_agenda.Notifications;
 import com.github.tibolte.colvalcalendar.R;
 
@@ -22,6 +22,7 @@ public class EventRepository {
     private Context context;
     List<Event> eventList;
     private static int mId = 1;
+    LoginManager lm;
 
     protected EventRepository(Context ctx) {
         context = ctx;
@@ -82,6 +83,8 @@ public class EventRepository {
         AddEvent(event1);
         AddEvent(event2);
         AddEvent(event3);
+
+
     }
     public static EventRepository getInstance(Context ctx) {
         if(instance == null) {

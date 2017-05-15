@@ -3,7 +3,6 @@ package com.colval_agenda;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -16,7 +15,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.colval_agenda.BLL.Event;
-import com.colval_agenda.BLL.Utils;
+import com.colval_agenda.Utils.Utils;
 import com.colval_agenda.DAL.EventRepository;
 import com.github.tibolte.agendacalendarview.AgendaCalendarView;
 import com.github.tibolte.colvalcalendar.R;

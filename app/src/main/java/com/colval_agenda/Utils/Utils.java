@@ -1,4 +1,4 @@
-package com.colval_agenda.BLL;
+package com.colval_agenda.Utils;
 
 import android.content.Context;
 import android.content.Intent;

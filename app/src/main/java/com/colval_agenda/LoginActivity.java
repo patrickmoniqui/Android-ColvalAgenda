@@ -10,7 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.colval_agenda.BLL.Utils;
+import com.colval_agenda.Utils.Utils;
 import com.colval_agenda.DAL.LoginManager;
 import com.github.tibolte.colvalcalendar.R;
 
@@ -18,6 +18,7 @@ import com.github.tibolte.colvalcalendar.R;
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
     private static final int REQUEST_SIGNUP = 0;
+
 
     EditText _emailText,  _passwordText;
     Button _loginButton;
@@ -58,6 +59,7 @@ public class LoginActivity extends AppCompatActivity {
 
         int userId = Integer.parseInt(_emailText.getText().toString());
         String password = _passwordText.getText().toString();
+        LoginManager lm = new LoginManager();
 
         // TODO: Implement your own authentication logic here.
 
@@ -65,7 +67,7 @@ public class LoginActivity extends AppCompatActivity {
                 new Runnable() {
                     public void run() {
                         // On complete call either onLoginSuccess or onLoginFailed
-                        if(LoginManager.ValidateUser(userId, password))
+                        if(lm.ValidateUser(userId, password))
                         {
                             onLoginSuccess();
                         }
