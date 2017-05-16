@@ -4,7 +4,7 @@
     <string name="tomorrow">Demain</string>
     <string name="agenda_event_day_duration">j</string>
     <string name="agenda_event_all_day">Jour entier</string>
-    <string name="agenda_event_no_events">Pas d\'événements</string>
+    <string name="agenda_event_no_events"></string>
 
     <!-- Weather -->
     <string name="morning">Matin</string>

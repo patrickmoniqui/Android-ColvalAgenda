@@ -15,18 +15,28 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
-        <View
-            android:id="@+id/view_day_circle_selected"
-            android:layout_width="@dimen/circle_selected_size"
-            android:layout_height="@dimen/circle_selected_size"
-            android:background="@drawable/event_color_circle"
-            android:visibility="gone"/>
+            <View
+                android:id="@+id/view_day_circle_selected"
+                android:layout_width="@dimen/circle_selected_size"
+                android:layout_height="@dimen/circle_selected_size"
+                android:background="@drawable/event_color_circle"
+                android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/view_day_day_label"
+                android:layout_gravity="center"
+                style="@style/CalendarCellText"/>
 
         <TextView
-            android:id="@+id/view_day_day_label"
+            android:id="@+id/view_day_dot_has_event"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="."
             android:layout_gravity="center"
-            style="@style/CalendarCellText"/>
+            android:layout_marginTop="15px"
+            android:textSize="30dp"
+            android:visibility="gone" />
+
 
     </FrameLayout>
-
 </LinearLayout>

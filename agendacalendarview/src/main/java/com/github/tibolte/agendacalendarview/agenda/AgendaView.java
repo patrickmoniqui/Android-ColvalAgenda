@@ -53,7 +53,7 @@ public class AgendaView extends FrameLayout {
                         Events.DayClickedEvent clickedEvent = (Events.DayClickedEvent) event;
                         getAgendaListView().scrollToCurrentDate(clickedEvent.getCalendar());
                     } else if (event instanceof Events.CalendarScrolledEvent) {
-                        int offset = (int) (3 * getResources().getDimension(R.dimen.day_cell_height));
+                        int offset = (int) (0.01 * getResources().getDimension(R.dimen.day_cell_height));
                         translateList(offset);
                     } else if (event instanceof Events.EventsFetched) {
                         ((AgendaAdapter) getAgendaListView().getAdapter()).updateEvents(CalendarManager.getInstance().getEvents());
@@ -112,7 +112,8 @@ public class AgendaView extends FrameLayout {
     }
 
     public void translateList(int targetY) {
-        if (targetY != getTranslationY()) {
+        float transY = getTranslationY();
+        if (targetY != transY) {
             ObjectAnimator mover = ObjectAnimator.ofFloat(this, "translationY", targetY);
             mover.setDuration(150);
             mover.addListener(new Animator.AnimatorListener() {

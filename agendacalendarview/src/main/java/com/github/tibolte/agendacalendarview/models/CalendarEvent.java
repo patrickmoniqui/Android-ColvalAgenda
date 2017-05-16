@@ -46,4 +46,6 @@ public interface CalendarEvent {
     boolean getNotification();
 
     void setNotification(boolean b);
+
+    int getEventColor();
 }

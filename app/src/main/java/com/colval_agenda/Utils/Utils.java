@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import com.colval_agenda.BLL.User;
 import com.colval_agenda.LoginActivity;
 
 import java.sql.Time;
@@ -18,12 +19,13 @@ import java.util.Date;
 
 public class Utils {
 
-    public static void RegisterGlobalUser(Context ctx, int id, String password)
+    public static void RegisterGlobalUser(Context ctx, int id, String password, String display_name)
     {
         SharedPreferences settings = ctx.getApplicationContext().getSharedPreferences("Login", 0);
         SharedPreferences.Editor editor = settings.edit();
         editor.putInt("userId", id);
         editor.putString("userPwd", password);
+        editor.putString("displayname", display_name);
         editor.apply();
     }
 
@@ -33,6 +35,7 @@ public class Utils {
         SharedPreferences.Editor editor = settings.edit();
         editor.remove("userId");
         editor.remove("userPwd");
+        editor.remove("displayname");
     }
 
     public static boolean GlobalUserLogged(Context ctx)
@@ -43,6 +46,17 @@ public class Utils {
 
         if(id != -1 && !pwd.isEmpty()) return true;
         else return false;
+    }
+
+    public static User GetGlobalUser(Context ctx)
+    {
+        SharedPreferences settings = ctx.getApplicationContext().getSharedPreferences("Login", 0);
+        int id = settings.getInt("userId", -1);
+        String pwd = settings.getString("userPwd", "");
+        String displayname = settings.getString("displayname", "");
+        User user = new User(id+"", pwd, displayname);
+
+        return user;
     }
 
     public static int GetGlobalUserId(Context ctx)

@@ -106,6 +106,21 @@ public class CalendarManager {
         return mMonthHalfNameFormat;
     }
 
+    public int nbEventForDate(IDayItem dayItem)
+    {
+        Date d2 = dayItem.getDateInstance();
+        int cpt=0;
+        for(CalendarEvent calendarEvent : mEvents)
+        {
+            Date d1 = calendarEvent.getInstanceDay().getTime();
+            if(calendarEvent.getTitle() != mContext.getResources().getString(R.string.agenda_event_no_events))
+                if(d1.equals(d2))
+                    cpt++;
+        }
+
+        return cpt;
+    }
+
     // endregion
 
     // region Public methods

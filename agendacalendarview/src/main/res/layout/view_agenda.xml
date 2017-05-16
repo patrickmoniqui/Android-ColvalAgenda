@@ -18,6 +18,6 @@
         android:dividerHeight="1dp"
         android:overScrollMode="never"
         android:scrollbars="none"
-        android:scrollingCache="false"/>
+        android:scrollingCache="false" />
 
 </merge>

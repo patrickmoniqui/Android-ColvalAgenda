@@ -2,17 +2,29 @@ package com.colval_agenda;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.AsyncTask;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.colval_agenda.BLL.Response.LoginResponse;
 import com.colval_agenda.Utils.Utils;
 import com.colval_agenda.DAL.LoginManager;
 import com.github.tibolte.colvalcalendar.R;
+
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.client.RestTemplate;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 
 public class LoginActivity extends AppCompatActivity {
@@ -22,6 +34,7 @@ public class LoginActivity extends AppCompatActivity {
 
     EditText _emailText,  _passwordText;
     Button _loginButton;
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +64,7 @@ public class LoginActivity extends AppCompatActivity {
 
         _loginButton.setEnabled(false);
 
-        final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this,
+        progressDialog = new ProgressDialog(LoginActivity.this,
                 R.style.Dialog);
         progressDialog.setIndeterminate(true);
         progressDialog.setMessage("Authenticating...");
@@ -63,21 +76,8 @@ public class LoginActivity extends AppCompatActivity {
 
         // TODO: Implement your own authentication logic here.
 
-        new android.os.Handler().postDelayed(
-                new Runnable() {
-                    public void run() {
-                        // On complete call either onLoginSuccess or onLoginFailed
-                        if(lm.ValidateUser(userId, password))
-                        {
-                            onLoginSuccess();
-                        }
-                        else
-                        {
-                            onLoginFailed();
-                        }
-                        progressDialog.dismiss();
-                    }
-                }, 3000);
+        AsyncTask<Void, Void, LoginResponse> loginAsync = new LoginAsync(userId, password);
+        loginAsync.execute();
     }
 
     @Override
@@ -86,19 +86,29 @@ public class LoginActivity extends AppCompatActivity {
         //moveTaskToBack(true);
     }
 
-    public void onLoginSuccess() {
+    public void onLoginSuccess(LoginResponse response) {
         _loginButton.setEnabled(true);
         int userId = Integer.parseInt(_emailText.getText().toString());
         String password = _passwordText.getText().toString();
 
-        Utils.RegisterGlobalUser(getBaseContext(), userId, password);
+        Utils.RegisterGlobalUser(getBaseContext(), userId, password, response.getDisplayName());
+
         Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
+
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                progressDialog.dismiss();
+                startActivity(intent);
+            }
+        }, 2000); // 2sec delay to show welcome <user>
     }
 
     public void onLoginFailed() {
         Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
         _loginButton.setEnabled(true);
+
+        progressDialog.dismiss();
     }
 
     public boolean validate() {
@@ -122,5 +132,50 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         return valid;
+    }
+
+
+    class LoginAsync extends AsyncTask<Void, Void, LoginResponse>
+    {
+        private int userId;
+        private String pwd;
+
+        public LoginAsync(int _username, String _pwd)
+        {
+            userId = _username;
+            pwd = _pwd;
+        }
+
+
+        @Override
+        protected LoginResponse doInBackground(Void... params) {
+            try {
+                final String url = "http://colvalagenda.gear.host/api/login/authentification?username=" + userId + "&pwd=" + pwd;
+                RestTemplate restTemplate = new RestTemplate();
+                restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
+                LoginResponse response = restTemplate.getForObject(url, LoginResponse.class);
+                return response;
+            } catch (Exception e) {
+                Log.e("MainActivity", e.getMessage(), e);
+                LoginResponse response = new LoginResponse();
+                response.setSuccess(false);
+                return response;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(LoginResponse response) {
+
+            if(response.isSuccess())
+            {
+                progressDialog.setMessage("Welcome " + response.getDisplayName() + "!");
+
+                onLoginSuccess(response);
+            }
+            else
+            {
+                onLoginFailed();
+            }
+        }
     }
 }

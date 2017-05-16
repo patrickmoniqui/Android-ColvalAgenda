@@ -79,6 +79,12 @@ public class BaseCalendarEvent implements CalendarEvent {
      * Indicates if we want a notification
      */
     private boolean mNotification;
+    /**
+     * Indicates if we cant edit the event
+     */
+    private boolean mEditable;
+
+
 
     // region Constructor
 
@@ -301,6 +307,12 @@ public class BaseCalendarEvent implements CalendarEvent {
 
         this.mNotification = notification;
     }
+
+    @Override
+    public int getEventColor() {
+        return this.mColor;
+    }
+
 
     @Override
     public CalendarEvent copy() {

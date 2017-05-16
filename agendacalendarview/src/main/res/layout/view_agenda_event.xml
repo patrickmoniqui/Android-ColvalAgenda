@@ -73,21 +73,24 @@
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
-            <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/img_location"/>
+                <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/img_location"/>
 
-            <TextView
-                    android:id="@+id/view_agenda_event_location"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:textColor="@color/calendar_text_default"
-                    android:textSize="11dp"/>
+                <TextView
+                        android:id="@+id/view_agenda_event_location"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:textColor="@color/calendar_text_default"
+                        android:textSize="11dp"/>
+
+            </LinearLayout>
 
         </LinearLayout>
 
-        </LinearLayout>
+
 
 </com.github.tibolte.agendacalendarview.agenda.AgendaEventView>
+

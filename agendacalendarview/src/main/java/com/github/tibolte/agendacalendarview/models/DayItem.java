@@ -17,6 +17,7 @@ public class DayItem implements IDayItem {
     private boolean mFirstDayOfTheMonth;
     private boolean mSelected;
     private String mMonth;
+    private boolean hasEvents;
 
     // region Constructor
 
@@ -43,6 +44,17 @@ public class DayItem implements IDayItem {
     // endregion
 
     // region Getters/Setters
+
+    public Date getDateInstance()
+    {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(mDate);
+        cal.set(Calendar.HOUR, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        return cal.getTime();
+    }
 
     public Date getDate() {
         return mDate;
@@ -112,6 +124,15 @@ public class DayItem implements IDayItem {
         if (this.mValue == 1) {
             this.mFirstDayOfTheMonth = true;
         }
+    }
+
+    public boolean isHasEvents() {
+        return hasEvents;
+    }
+
+
+    public void setHasEvents(boolean hasEvents) {
+        this.hasEvents = hasEvents;
     }
 
     // endregion

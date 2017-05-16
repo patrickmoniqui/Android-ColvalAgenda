@@ -11,8 +11,8 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <ImageView android:src="@drawable/agendacolval_loginlogo"
-        android:layout_width="wrap_content"
-        android:layout_height="72dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"
         android:layout_gravity="center_horizontal" />
 

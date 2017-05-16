@@ -135,12 +135,14 @@ public class WeeksAdapter extends RecyclerView.Adapter<WeeksAdapter.WeekViewHold
                 TextView txtDay = (TextView) cellItem.findViewById(R.id.view_day_day_label);
                 TextView txtMonth = (TextView) cellItem.findViewById(R.id.view_day_month_label);
                 View circleView = cellItem.findViewById(R.id.view_day_circle_selected);
+                TextView txtDayHasEvent = (TextView) cellItem.findViewById(R.id.view_day_dot_has_event);
                 cellItem.setOnClickListener(v->BusProvider.getInstance().send(new Events.DayClickedEvent(dayItem)));
 
                 txtMonth.setVisibility(View.GONE);
                 txtDay.setTextColor(mDayTextColor);
                 txtMonth.setTextColor(mDayTextColor);
                 circleView.setVisibility(View.GONE);
+                txtDayHasEvent.setVisibility(View.GONE);
 
                 txtDay.setTypeface(null, Typeface.NORMAL);
                 txtMonth.setTypeface(null, Typeface.NORMAL);
@@ -165,6 +167,16 @@ public class WeeksAdapter extends RecyclerView.Adapter<WeeksAdapter.WeekViewHold
                 // Highlight the cell if this day is today
                 if (dayItem.isToday() && !dayItem.isSelected()) {
                     txtDay.setTextColor(mCurrentDayColor);
+                }
+
+                // Display a dot bellow event date if not select and if day has events
+                if(!dayItem.isSelected() && CalendarManager.getInstance(mContext).nbEventForDate(dayItem) > 0)
+                {
+                    txtDayHasEvent.setVisibility(View.VISIBLE);
+                }
+                else
+                {
+                    txtDayHasEvent.setVisibility(View.GONE);
                 }
 
                 // Show a circle if the day is selected

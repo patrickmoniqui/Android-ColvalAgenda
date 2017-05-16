@@ -18,8 +18,8 @@ public class Preferences {
     public static final String EVENT_ENDDATE = "endDate";
     public static final String EVENT_REMINDER = "reminder";
     public static final String EVENT_ALL_DAY = "allday";
-    public static final String EVENT_EDITABLE = "reminder";
-    public static final String EVENT_USER_ID = "reminder";
+    public static final String EVENT_EDITABLE = "editable";
+    public static final String EVENT_USER_ID = "user_id";
 
     public static String URL_CHECK_LOGIN = "http://10.0.2.2:60705/AndroidService.asmx?op=checkLogin";
     public static String URL_GET_CLASSES = "http://10.0.2.2:60705/AndroidService.asmx/getClasses";

@@ -19,7 +19,7 @@ public class EventHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE" + Preferences.TB_EVENT + "(" +
+        db.execSQL("CREATE TABLE " + Preferences.TB_EVENT + " (" +
                 Preferences.EVENT_ID + " integer primary key autoincrement," +
                 Preferences.EVENT_TITLE + " text not null," +
                 Preferences.EVENT_DESCRIPTION + " text," +
@@ -27,11 +27,11 @@ public class EventHelper extends SQLiteOpenHelper {
                 Preferences.EVENT_COLOR + " integer," +
                 Preferences.EVENT_STARTDATE + " text," +
                 Preferences.EVENT_ENDDATE + " text," +
-                Preferences.EVENT_REMINDER + " integer" +
-                Preferences.EVENT_ALL_DAY + " integer" +
-                Preferences.EVENT_EDITABLE + " integer" +
+                Preferences.EVENT_REMINDER + " integer," +
+                Preferences.EVENT_ALL_DAY + " integer," +
+                Preferences.EVENT_EDITABLE + " integer," +
                 Preferences.EVENT_USER_ID + " integer" +
-                        ")"
+               " )"
         );
 
     }

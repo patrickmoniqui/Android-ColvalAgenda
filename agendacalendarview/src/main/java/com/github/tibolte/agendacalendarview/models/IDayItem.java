@@ -43,4 +43,10 @@ public interface IDayItem {
 
     IDayItem copy();
 
+    boolean isHasEvents();
+
+    void setHasEvents(boolean hasEvents);
+
+    Date getDateInstance();
+
 }

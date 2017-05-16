@@ -18,7 +18,7 @@ import java.util.List;
  */
 public class EventManager {
 
-    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
 
     SQLiteOpenHelper helper;
     SQLiteDatabase database;
@@ -46,8 +46,8 @@ public class EventManager {
         ContentValues values = new ContentValues();
         values.put(Preferences.EVENT_TITLE, event.getTitle());
         values.put(Preferences.EVENT_DESCRIPTION, event.getDescription());
-        values.put(Preferences.EVENT_LOCATION, event.getTitle());
-        values.put(Preferences.EVENT_COLOR, event.getTitle());
+        values.put(Preferences.EVENT_LOCATION, event.getLocation());
+        values.put(Preferences.EVENT_COLOR, event.getEventColor());
         values.put(Preferences.EVENT_STARTDATE, dateFormat.format(event.getStartDate()));
         values.put(Preferences.EVENT_ENDDATE, dateFormat.format(event.getFinishDate()));
         values.put(Preferences.EVENT_REMINDER, booleanToInt(event.isReminder()));
@@ -57,12 +57,12 @@ public class EventManager {
         database.insert(Preferences.TB_EVENT, null, values);
     }
 
-    public void updateEvent (Event event){
+    public void updateEvent (int id, Event event){
         ContentValues values = new ContentValues();
         values.put(Preferences.EVENT_TITLE, event.getTitle());
         values.put(Preferences.EVENT_DESCRIPTION, event.getDescription());
-        values.put(Preferences.EVENT_LOCATION, event.getTitle());
-        values.put(Preferences.EVENT_COLOR, event.getTitle());
+        values.put(Preferences.EVENT_LOCATION, event.getLocation());
+        values.put(Preferences.EVENT_COLOR, event.getEventColor());
         values.put(Preferences.EVENT_STARTDATE, dateFormat.format(event.getStartDate()));
         values.put(Preferences.EVENT_ENDDATE, dateFormat.format(event.getFinishDate()));
         values.put(Preferences.EVENT_REMINDER, booleanToInt(event.isReminder()));
@@ -70,23 +70,61 @@ public class EventManager {
         values.put(Preferences.EVENT_EDITABLE, booleanToInt(event.isEditable()));
         values.put(Preferences.EVENT_USER_ID, event.getUserId());
 
-        String [] id = new String[1];
-        id[0] = event.getId()+"";
-        database.update(Preferences.TB_EVENT, values, Preferences.EVENT_ID + "=?", id);
+        String [] eventId = new String[1];
+        eventId[0] = id+"";
+        database.update(Preferences.TB_EVENT, values, Preferences.EVENT_ID + "=?", eventId);
     }
 
-    public void deleteEvent (Event event){
+    public void deleteEvent (int id){
         String[] values = new String[1];
-        values[0] = event.getId()+"";
+        values[0] = id+"";
         database.delete(Preferences.TB_EVENT, Preferences.EVENT_ID + "=?", values);
     }
 
-    public List<Event> getAllEvents() throws ParseException {
+    public List<Event> getAllEvents() {
         Cursor cursor = database.query(Preferences.TB_EVENT, null,null,null,null,null,null);
         List<Event> events = new ArrayList<>();
         if (cursor != null){
-            cursor.moveToFirst();
-            do{
+            if(cursor.moveToFirst())
+            {
+                do{
+                    Event event = new Event();
+                    event.setId(cursor.getInt(cursor.getColumnIndex(Preferences.EVENT_ID)));
+                    event.setTitle(cursor.getString(cursor.getColumnIndex(Preferences.EVENT_TITLE)));
+                    event.setDescription(cursor.getString(cursor.getColumnIndex(Preferences.EVENT_DESCRIPTION)));
+                    event.setLocation(cursor.getString(cursor.getColumnIndex(Preferences.EVENT_LOCATION)));
+                    event.setEventColor(cursor.getInt(cursor.getColumnIndex(Preferences.EVENT_COLOR)));
+                    try {
+                        event.setStartDate(dateFormat.parse(cursor.getString(cursor.getColumnIndex(Preferences.EVENT_STARTDATE))));
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    try {
+                        event.setFinishDate(dateFormat.parse(cursor.getString(cursor.getColumnIndex(Preferences.EVENT_ENDDATE))));
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    event.setReminder(intToBoolean(cursor.getInt(cursor.getColumnIndex(Preferences.EVENT_REMINDER))));
+                    event.setAllDay(intToBoolean(cursor.getInt(cursor.getColumnIndex(Preferences.EVENT_ALL_DAY))));
+                    event.setEditable(intToBoolean(cursor.getInt(cursor.getColumnIndex(Preferences.EVENT_EDITABLE))));
+                    event.setUserId(cursor.getInt(cursor.getColumnIndex(Preferences.EVENT_USER_ID)));
+
+                    events.add(event);
+                }
+                while (cursor.moveToNext());
+            }
+        }
+        return events;
+    }
+
+    public Event getEventById(int id){
+        String [] values = new String[1];
+        values[0] = id+"";
+
+        Cursor cursor = database.query(Preferences.TB_EVENT, null, Preferences.EVENT_ID + "=?", values, null,null,null);
+        if (cursor !=null){
+            if(cursor.moveToFirst())
+            {
                 Event event = new Event();
                 event.setId(cursor.getInt(cursor.getColumnIndex(Preferences.EVENT_ID)));
                 event.setTitle(cursor.getString(cursor.getColumnIndex(Preferences.EVENT_TITLE)));
@@ -108,41 +146,51 @@ public class EventManager {
                 event.setEditable(intToBoolean(cursor.getInt(cursor.getColumnIndex(Preferences.EVENT_EDITABLE))));
                 event.setUserId(cursor.getInt(cursor.getColumnIndex(Preferences.EVENT_USER_ID)));
 
-                events.add(event);
-            }while (cursor.moveToNext());
+                return event;
+            }
         }
-        return events;
+        return null;
     }
 
-    public Event getEventById(int id){
+    public List<Event> GetEventsForUser(int userId)
+    {
         String [] values = new String[1];
-        values[0] = id+"";
-        Event event = null;
-        Cursor cursor = database.query(Preferences.TB_EVENT, null, "id=?", values, null,null,null);
-        if (cursor !=null){
-            cursor.moveToFirst();
-            event = new Event();
-            event.setId(cursor.getInt(cursor.getColumnIndex(Preferences.EVENT_ID)));
-            event.setTitle(cursor.getString(cursor.getColumnIndex(Preferences.EVENT_TITLE)));
-            event.setDescription(cursor.getString(cursor.getColumnIndex(Preferences.EVENT_DESCRIPTION)));
-            event.setLocation(cursor.getString(cursor.getColumnIndex(Preferences.EVENT_LOCATION)));
-            event.setEventColor(cursor.getInt(cursor.getColumnIndex(Preferences.EVENT_COLOR)));
-            try {
-                event.setStartDate(dateFormat.parse(cursor.getString(cursor.getColumnIndex(Preferences.EVENT_STARTDATE))));
-            } catch (ParseException e) {
-                e.printStackTrace();
+        values[0] = userId + "";
+
+        List<Event> events = new ArrayList<>();
+
+        Cursor cursor = database.query(Preferences.TB_EVENT, null, Preferences.EVENT_USER_ID + "=?", values, null,null,null);
+        if (cursor != null){
+            if(cursor.moveToFirst())
+            {
+                do{
+                    Event event = new Event();
+                    event.setId(cursor.getInt(cursor.getColumnIndex(Preferences.EVENT_ID)));
+                    event.setTitle(cursor.getString(cursor.getColumnIndex(Preferences.EVENT_TITLE)));
+                    event.setDescription(cursor.getString(cursor.getColumnIndex(Preferences.EVENT_DESCRIPTION)));
+                    event.setLocation(cursor.getString(cursor.getColumnIndex(Preferences.EVENT_LOCATION)));
+                    event.setEventColor(cursor.getInt(cursor.getColumnIndex(Preferences.EVENT_COLOR)));
+                    try {
+                        event.setStartDate(dateFormat.parse(cursor.getString(cursor.getColumnIndex(Preferences.EVENT_STARTDATE))));
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    try {
+                        event.setFinishDate(dateFormat.parse(cursor.getString(cursor.getColumnIndex(Preferences.EVENT_ENDDATE))));
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    event.setReminder(intToBoolean(cursor.getInt(cursor.getColumnIndex(Preferences.EVENT_REMINDER))));
+                    event.setAllDay(intToBoolean(cursor.getInt(cursor.getColumnIndex(Preferences.EVENT_ALL_DAY))));
+                    event.setEditable(intToBoolean(cursor.getInt(cursor.getColumnIndex(Preferences.EVENT_EDITABLE))));
+                    event.setUserId(cursor.getInt(cursor.getColumnIndex(Preferences.EVENT_USER_ID)));
+
+                    events.add(event);
+                }
+                while (cursor.moveToNext());
             }
-            try {
-                event.setFinishDate(dateFormat.parse(cursor.getString(cursor.getColumnIndex(Preferences.EVENT_ENDDATE))));
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            event.setReminder(intToBoolean(cursor.getInt(cursor.getColumnIndex(Preferences.EVENT_REMINDER))));
-            event.setAllDay(intToBoolean(cursor.getInt(cursor.getColumnIndex(Preferences.EVENT_ALL_DAY))));
-            event.setEditable(intToBoolean(cursor.getInt(cursor.getColumnIndex(Preferences.EVENT_EDITABLE))));
-            event.setUserId(cursor.getInt(cursor.getColumnIndex(Preferences.EVENT_USER_ID)));
         }
-        return event;
+        return events;
     }
 
     public int booleanToInt (boolean reminder){

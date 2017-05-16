@@ -21,7 +21,6 @@
         <include layout="@layout/view_day_calendar_header" />
 
         <include layout="@layout/view_day_calendar_header" />
-
     </LinearLayout>
 
     <com.github.tibolte.agendacalendarview.calendar.weekslist.WeekListView
@@ -35,5 +34,4 @@
         android:listSelector="@android:color/transparent"
         android:overScrollMode="never"
         android:scrollbars="none" />
-
 </merge>

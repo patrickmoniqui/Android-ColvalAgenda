@@ -31,7 +31,7 @@ public class Event_Edit_Activity extends AppCompatActivity {
     AgendaCalendarView mAgendaCalendarView;
     int userId=-1;
     int eventId=-1;
-    Event event;
+    Event view_event;
     EventRepository repository;
 
     public static final int RESULT_NO_REFRESH_NEEDED = 0;
@@ -81,16 +81,17 @@ public class Event_Edit_Activity extends AppCompatActivity {
 
             if(eventId > 0)
             {
-                event = repository.GetEventById(eventId);
+                view_event = repository.GetEventById(eventId);
 
                 // si l'évènement n'est pas modification
-                if(!event.isEditable())
+                if(!view_event.isEditable())
                 {
                     Toast.makeText(this, getResources().getText(R.string.errorCantEditEvent), Toast.LENGTH_SHORT).show();
                     finish();
                 }
 
                 SetupInterfaceForEdit();
+
                 btnSave.setText(getResources().getString(R.string.save));
                 btnDelete.setVisibility(View.VISIBLE);
             }
@@ -110,7 +111,7 @@ public class Event_Edit_Activity extends AppCompatActivity {
     private void SetupInterfaceForEdit()
     {
         //initialise
-        Date date = event.getStartDate();
+        Date date = view_event.getStartDate();
         Calendar mcurrentDate=Calendar.getInstance();
         mcurrentDate.setTime(date);
         int mYear=mcurrentDate.get(Calendar.YEAR);
@@ -119,19 +120,19 @@ public class Event_Edit_Activity extends AppCompatActivity {
         int fhour = mcurrentDate.get(Calendar.HOUR_OF_DAY);
         int fminute = mcurrentDate.get(Calendar.MINUTE);
 
-        date = event.getFinishDate();
+        date = view_event.getFinishDate();
         mcurrentDate=Calendar.getInstance();
         mcurrentDate.setTime(date);
         int thour = mcurrentDate.get(Calendar.HOUR_OF_DAY);
         int tminute = mcurrentDate.get(Calendar.MINUTE);
 
-        txtTitle.setText(event.getTitle());
-        txtDesc.setText(event.getDescription());
-        txtLocation.setText(event.getLocation());
+        txtTitle.setText(view_event.getTitle());
+        txtDesc.setText(view_event.getDescription());
+        txtLocation.setText(view_event.getLocation());
         txtStartDate.setText(Utils.padLeft(mDay, "0", 2) + "/" + Utils.padLeft(mMonth+1, "0", 2) + "/" + Utils.padLeft(mYear, "0", 2));
         txtStartTime.setText(Utils.padLeft(fhour, "0", 2) + ":" + Utils.padLeft(fminute, "0", 2));
         txtFinishTime.setText(Utils.padLeft(thour, "0", 2) + ":" + Utils.padLeft(tminute, "0", 2));
-        ckRappeler.setChecked(event.isReminder());
+        ckRappeler.setChecked(view_event.isReminder());
     }
 
     private void SetupEventHandlers()
@@ -207,12 +208,16 @@ public class Event_Edit_Activity extends AppCompatActivity {
             event.setReminder(ckRappeler.isChecked());
 
             // if modification event
-            if(eventId > 0)
+            if(eventId > 0 && event != null)
             {
+                event.setEditable(view_event.isEditable());
+                event.setAllDay(view_event.isAllDay());
+
                 repository.EditEvent(eventId, event);
             }
             else
             {
+                event.setEditable(true);
                 repository.AddEvent(event);
             }
 
