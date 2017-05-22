@@ -25,9 +25,9 @@
         <EditText android:id="@+id/input_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textEmailAddress"
             android:hint="No de DA:"
-            android:textColor="@android:color/white" />
+            android:textColor="@android:color/white"
+            android:inputType="number" />
     </android.support.design.widget.TextInputLayout>
 
     <!-- Password Label -->

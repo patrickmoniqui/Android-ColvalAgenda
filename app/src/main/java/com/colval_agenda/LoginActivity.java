@@ -58,7 +58,6 @@ public class LoginActivity extends AppCompatActivity {
         Log.d(TAG, "Login");
 
         if (!validate()) {
-            onLoginFailed();
             return;
         }
 
@@ -108,7 +107,8 @@ public class LoginActivity extends AppCompatActivity {
         Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
         _loginButton.setEnabled(true);
 
-        progressDialog.dismiss();
+        if(progressDialog != null)
+            progressDialog.dismiss();
     }
 
     public boolean validate() {

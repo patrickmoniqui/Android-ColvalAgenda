@@ -152,7 +152,8 @@ public class MainActivity extends AppCompatActivity implements CalendarPickerCon
             // 1 means there is change. refresh required.
             case RESULT_REFRESH_NEEDED:
             {
-                initAgenda();
+                AsyncTask<Void, Void, EventResponse[]> eventAsync = new EventAsync(numDA);
+                eventAsync.execute();
                 break;
             }
         }
